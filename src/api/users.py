@@ -1,15 +1,17 @@
 from fastapi import APIRouter, Depends, Request, UploadFile, File
 from datetime import timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from src.schemas import User
 from src.services.auth import get_current_user
-from limiter import limiter
 from src.database.db import get_db
 from src.conf.config import config
 from src.services.upload_file import UploadFileService
 from src.services.users import UserService
 
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(prefix="/users", tags=["users"])
 
 rate_limit_store = {}
