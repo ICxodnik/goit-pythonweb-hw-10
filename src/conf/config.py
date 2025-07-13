@@ -1,5 +1,26 @@
-class Config:
-    DB_URL = "postgresql+asyncpg://postgres:123456@localhost:5432/db_app"
+from pydantic import ConfigDict
+from pydantic_settings import BaseSettings
 
 
-config = Config
+class Settings(BaseSettings):
+    DB_URL: str = "postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+
+    JWT_SECRET: str
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRATION_MINUTES: int = 15
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
+
+    MAIL_SMTP_USERNAME: str
+    MAIL_SMTP_PASSWORD: str
+    MAIL_SMTP_FROM: str
+    MAIL_SMTP_SERVER: str
+
+    REDIS_HOST: str
+    REDIS_PORT: int
+
+    model_config = ConfigDict(
+        extra="ignore", env_file=".env", env_file_encoding="utf-8", case_sensitive=True
+    )
+
+
+config = Settings()

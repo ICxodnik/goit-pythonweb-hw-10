@@ -6,6 +6,7 @@ from src.schemas import TokenRefreshRequest, UserCreate, Token, User
 from src.services.auth import create_access_token, Hash, create_refresh_token, verify_refresh_token, get_email_from_token
 from src.services.users import UserService
 from src.database.db import get_db
+from src.services.email import send_email
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -30,7 +31,8 @@ async def register_user(user_data: UserCreate, bg_tasks: BackgroundTasks, reques
         )
     user_data.password = Hash().get_password_hash(user_data.password)
     new_user = await user_service.create_user(user_data)
-    
+    bg_tasks.add_task(send_email, new_user.email,
+                      new_user.username, str(request.base_url))
     return new_user
 
 
