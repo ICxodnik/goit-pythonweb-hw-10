@@ -7,6 +7,7 @@ from src.services.auth import get_current_user
 from limiter import limiter
 from src.database.db import get_db
 from src.conf.config import config
+from src.services.upload_file import UploadFileService
 from src.services.users import UserService
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -30,4 +31,11 @@ async def update_avatar_user(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    pass
+    avatar_url = UploadFileService(
+        config.CLOUDINARY_NAME, config.CLOUDINARY_API_KEY, config.CLOUDINARY_API_SECRET
+    ).upload_file(file, user.username)
+
+    user_service = UserService(db)
+    user_new_ava = await user_service.update_avatar_url(user.email, avatar_url)
+
+    return user_new_ava
