@@ -27,7 +27,7 @@ services:
       - .env
     depends_on:
       - redis
-      - db
+      - postgres
     command:
       [
         "uvicorn",

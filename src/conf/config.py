@@ -3,17 +3,17 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    DB_URL: str = "postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    DB_URL: str
 
     JWT_SECRET: str
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
-    MAIL_SMTP_USERNAME: str
-    MAIL_SMTP_PASSWORD: str
-    MAIL_SMTP_FROM: str
-    MAIL_SMTP_SERVER: str
+    MAIL_SMTP_USERNAME: str | None = None
+    MAIL_SMTP_PASSWORD: str | None = None
+    MAIL_SMTP_FROM: str | None = None
+    MAIL_SMTP_SERVER: str | None = None
 
     REDIS_HOST: str
     REDIS_PORT: int
